@@ -31,17 +31,20 @@ $(function () {
 
     // uses data attr in parameter to make specified api call.  *doesn't work after adding new word*
     $('.word').click(function () {
-
+        
         $("#gifs").empty()
 
         var xhr = $.get(`http://api.giphy.com/v1/gifs/search?q=${$(this).attr('data-wanted')}&api_key=${key}&limit=10`)
         xhr.done(function (respond) {
-
+            console.log(respond)
             $.each(respond.data, function (i, item) {
 
                 var pic = item.images.original.url
-                $("#gifs").append(`<img src="${pic}"> `)
+                var rat = item.rating
+
+                $("#gifs").append(`<h3>Rating: ${rat}</h3><img src=${pic}> `)
             })
         })
     })
 })
+
