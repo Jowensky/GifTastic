@@ -1,58 +1,47 @@
 var key = 'XLl0PGWvEuBqDV7BsRBquZNZVa5GdwSa'
-var thing = ["Tomato", "Lovely", "Eye", "Ben", "Awake", "Four", "Hours", "Tiny", "Water", "Bag"]
+var thing = ["Tomato", "Lovely", "Eye", "Ben", "Awake", "Four", "Days", "Tiny", "Water", "Bag"]
 
 $(function () {
 
+    // grabs word from array & turns into button (adds class, data attr, & text)
+    function add() {
+        for (var i = 0; i < thing.length; i++) {
+
+            $("#want").val("")
+
+            var buttons = $('<button>');
+            buttons.attr('data-wanted', thing[i]);
+            buttons.addClass('word')
+            buttons.text(thing[i])
+            $('.button').append(buttons)
+        }
+    }
     add()
 
-    $('#search').click(function () {
+    // grabs input value and pushes into array then calls add function
+    $('#search').click(function (e) {
+        e.preventDefault();
 
         $('.button').empty()
         var want = $("#want").val()
         thing.push(want)
         add()
+
     })
 
-    function add() {
-        for (var i = 0; i < thing.length; i++) {
+    // uses data attr in parameter to make specified api call.  *doesn't work after adding new word*
+    $('.word').click(function () {
 
-            var a = $('<button>');
-            a.attr('data-wanted', thing[i]);
-            a.text(thing[i])
-            $('.button').append(a)
-        }
-    }
-    
+        $("#gifs").empty()
 
-    $('.button').click(function () {
+        var xhr = $.get(`http://api.giphy.com/v1/gifs/search?q=${$(this).attr('data-wanted')}&api_key=${key}&limit=10`)
+        xhr.done(function (respond) {
 
-        console.log()
-        // var xhr = $.get(`http://api.giphy.com/v1/gifs/search?q=${$(this).attr('data-wanted')}&api_key=${key}&limit=10`)
+            $.each(respond.data, function (i, item) {
 
-        // xhr.done(function (data) { console.log(data); })
+                var pic = item.images.original.url
+                $("#gifs").append(`<img src="${pic}"> `)
+            })
+        })
     })
-
 })
-
-
-
-
-
-// This json function would not take the vaule of the search bar 
-
-// var thing = $("#thing").val()
-// var url = `http://api.giphy.com/v1/gifs/search?`
-
-// var options = {
-//     q: thing,
-//     api_key: key,
-//     limit: 5
-// }
-
-// function fetch() {
-//     $.getJSON(url, options,
-//         function (response) {
-//             console.log(response)
-//         }
-//     )
-// }
